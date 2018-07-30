@@ -1,0 +1,116 @@
+$base-desc-color:#cccccc;
+
+.foot {
+	position: absolute;
+	bottom: 0px;
+	width: 750px;
+	height: 80px;
+}
+.seperator {
+	width: 700px;
+	margin-left: 25px;
+	align-items: center;
+}
+.boxinner {
+	width: 600px;
+	height: 120px;
+	border-bottom-width: 1px;
+}
+.box {
+	width: 650px;
+	height: 450px;
+	margin-left: 50px;
+	border-color: $base-desc-color;
+	flex-direction: column;
+	justify-content: center;
+	align-self: center;
+}
+.container {
+	width: 750px;
+	height: 450px;
+	margin-top: 40px;
+}
+.rightBtn {
+	width: 100px;
+	height: 80px;
+	justify-content: center;
+	align-items: flex-end;
+}
+.leftPopBtn {
+	width: 100px;
+	height: 80px;
+	justify-content: center;
+}
+.fn {
+	width: 750px;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+.block {
+	width: 750px;
+	height: 100px;
+	border-bottom-width: 1px;
+	border-bottom-color: $base-desc-color;
+	justify-content: space-around;
+	align-items: flex-start;
+	background-color: #ffffff;
+}
+.end {
+	border-bottom-width: 0px;
+}
+.inneright {
+	flex-direction: row;
+}
+.innerleft {
+	flex-direction: row;
+	align-items: center;
+}
+.inner {
+	width:750px;
+	flex-direction: row;
+	justify-content: space-between;
+}
+.detail {
+	color: $base-desc-color;
+	font-size: 24px;
+	margin-top: 10px;
+}
+.head {
+	height:100px;
+	width: 700px;
+	margin-left: 25px;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: row;
+	margin-top: 50px;
+}
+.headmiddle {
+	font-size: 22px;
+}
+.headcenter {
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+.main {
+	width: 750px;
+}
+.welcome {
+	height: 150px;
+	flex-direction: column;
+	margin-top: 30px;
+	padding-left: 50px;
+}
+.wel {
+	font-size:50px;
+	margin-bottom: 10px;
+}
+.welline {
+	flex-direction : row;
+	align-items : center;
+}
+.come {
+	font-size: 24px;
+	color: $base-desc-color;
+}
