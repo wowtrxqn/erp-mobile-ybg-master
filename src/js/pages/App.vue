@@ -46,7 +46,7 @@
           <text style="width:5px;"></text>
           <text class="kitStyle btnStyle">记住密码</text>
         </div>
-        <text class="kitStyle btnStyle">注册</text>
+        <text class="kitStyle btnStyle">注册111</text>
       </div>
 
       
