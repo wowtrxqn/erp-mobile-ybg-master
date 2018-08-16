@@ -13,7 +13,7 @@ new Widget({
     },
     ajax: {
         //baseUrl: 'http://bjtm.shasteel.cn/ybg/',
-        baseUrl: 'http://10.68.0.53:8080/bjtm/',
+        baseUrl: 'http://10.68.0.55:8080/bjtm/',
         /**
          * 接口别名
          */
@@ -35,7 +35,7 @@ new Widget({
             }
             */
             options.header['Accept'] = 'application/json';
-            //options.header['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36';
+            options.header['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36';
             if(options.method == 'POST'){
                 options.header['Content-Type'] = 'application/x-www-form-urlencoded';
                 options.data = options.data || {};

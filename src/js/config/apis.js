@@ -21,6 +21,8 @@ export default {
     //修改密码
     updatePassword : 'EiService?type=mobile&service=BCBA01&method=changePassword',
 
+    //登陆日志
+    log : 'EiService?type=mobile&service=WEEXUser&method=Log',
 
 
     //-----------------业务功能api接口------------------

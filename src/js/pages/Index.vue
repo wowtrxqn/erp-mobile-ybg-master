@@ -184,6 +184,13 @@ module.exports = {
     },error => {
 
     })
+    let self=this;
+    setTimeout(()=>{
+      self.$fetch({
+        method: 'POST',   
+          name: 'log'
+      })
+    },1000)
 	  this.androidFinishApp()
   },
   methods:{

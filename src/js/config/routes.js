@@ -9,9 +9,6 @@ export default {
         //title: '主页',
         url: '/pages/Index.js'
     },
-    'More': {
-    	url: '/pages/More.js'
-    },
     'UserInfo': {
     	title: '预报港人员维护',
     	url: '/pages/UserInfo.js'

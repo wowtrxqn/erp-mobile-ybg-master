@@ -18,30 +18,32 @@
 					<!--
 					<text style="color:#6FAECF;">{{ item.id }} | {{ item.name }} | {{item.tel}}</text>
 					-->
-					<div class="itemleft">
-						<div class="itemleftcnt">
+					<div class="cnt">
+						<div class="leftcnt">
 							<text style="width:20px;"></text>
 							<image :src="people" style="height:28px;width:28px"></image>
 							<text style="width:10px;"></text>
-							<text class="itemtxt" :ref="['name'+i]">{{ item.name }} - {{ item.label == 'K' ? '客户' : '供应商' }}</text>
+							<text class="itemtxt" :ref="['name'+i]">{{ item.name }} - {{ item.label == 'K' ? '客户' : '驾驶员' }}</text>
 						</div>
-						<div class="itemleftcnt">
+						<text class="itemtxt itemtxtright">序号：{{ item.id }}</text>
+					</div>
+					<div class="cnt">
+						<div class="leftcnt">
 							<text style="width:20px;"></text>
 							<image :src="tel" style="height:28px;width:28px"></image>
 							<text style="width:10px;"></text>
 							<text class="itemtxt">{{ item.tel }}</text>
 						</div>
-						<div class="itemleftcnt">
+						<text class="itemtxt itemtxtright" v-if="item.time != null">录入时间：{{ item.time }}</text>
+					</div>
+					<div class="cnt">
+						<div class="leftcnt">
 							<text style="width:20px;"></text>
 							<image :src="idcardPic" style="height:28px;width:28px"></image>
 							<text style="width:10px;"></text>
 							<text class="itemtxt" v-if="item.idcard==' '">未留下身份证</text>
 							<text class="itemtxt" v-else>{{ item.idcard }}</text>
 						</div>
-					</div>
-					<div class="itemright">
-						<text class="itemtxt itemtxtright">序号：{{ item.id }}</text>
-						<text class="itemtxt itemtxtright" v-if="item.time != null">录入时间：{{ item.time }}</text>
 						<div class="." @click="addId(item.id,index)">
 				          <image :src="checkBoxImage" style="width:30px;height:30px;margin-right:20px;"></image>
 				        </div>
@@ -105,6 +107,17 @@ export default {
 		overlay:false,
 		svalue:''
 	}),
+	eros: {
+        beforeBackAppear(params) {
+        	if(!params){
+        		return
+        	}
+        	var op=params.action
+            if(op == 'edit' || op == 'add'){
+            	this.onrefresh();
+            }
+        }
+    },
 	created(){
 		this.overlay = true;
 		this.$fetch({
@@ -129,6 +142,12 @@ export default {
 			    }
 			})
 		})
+		/*
+		this.$router.getParams().then(resData=>{
+			if(resData && resData.flag=='Detail.vue'){
+				this.$notice.loading.show('123')
+			}
+		})*/
 	},
 	components: { 
 		WxcSlideNav,
@@ -361,9 +380,19 @@ export default {
 	height:80px;
 	justify-content: center;
 }
-.itemleftcnt {
+.cnt {
 	flex-direction: row;
 	align-items: center;
+	justify-content: space-between;
+}
+.leftcnt{
+	flex-direction: row;
+}
+.itemleftcnt {
+	/*
+	flex-direction: row;
+	align-items: center;
+	*/
 }
 .itemright {
 	flex-wrap: wrap;
@@ -376,13 +405,12 @@ export default {
 	font-size: 28px;
 	color:#666666;
 }
-.itemleft {
-	justify-content: space-around;
-	flex-direction: column;
-}
 .content {
 	flex-direction: row;
-	justify-content: space-between;
+	justify-content: space-around;
+	flex-direction: column;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 .nav-top {
 	height: 85px;

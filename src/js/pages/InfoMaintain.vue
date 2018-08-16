@@ -1,5 +1,7 @@
 <template>
   <div>
+    <list>
+      <cell>
     <div class="top">
       <text style="width:20px;"></text>
       <image :src="location" style="width:40px;height:40px;"></image>
@@ -131,7 +133,7 @@
         <div class="inputtxt">
           <input class="txt" type="text" placeholder="请输入业务代表名称" @input="General('people',$event)" :value="people"/>
         </div>
-        <div class="seperate" @click="selectMaintain">
+        <div class="seperate" @click="selectMaintain('K')">
           <image :src="moreselect" style="width:30px;height:30px;"></image>
         </div>
       </div>
@@ -166,17 +168,52 @@
         <div class="seperate">
         </div>
       </div>
+      <div class="block area">
+        <div class="labeltxt">
+          <text class="labelstyle">身份证:</text>
+        </div>
+        <div class="inputtxt">
+          <!--<input class="txt" type="button" placeholder="请选择" :value="type"/>-->
+          <input class="txt" type="text" placeholder="请输入身份证" :value="idcard" @input="General('idcard',$event)"/>
+        </div>
+        <div class="seperate">
+        </div>
+      </div>
+
+      <div class="block">
+        <div class="labeltxt">
+          <text class="labelstyle">司机代表:</text>
+        </div>
+        <div class="inputtxt">
+          <input class="txt" type="text" placeholder="请输入业务代表名称" @input="General('dpeople',$event)" :value="dpeople"/>
+        </div>
+        <div class="seperate" @click="selectMaintain('J')">
+          <image :src="moreselect" style="width:30px;height:30px;"></image>
+        </div>
+      </div>
+      <div class="block">
+        <div class="labeltxt">
+          <text class="labelstyle">手机号:</text>
+        </div>
+        <div class="inputtxt">
+          <!--<input class="txt" type="button" placeholder="请选择" :value="type"/>-->
+          <input class="txt" type="text" placeholder="请输入手机号" :value="dphone" @input="General('dphone',$event)"/>
+        </div>
+        <div class="seperate">
+        </div>
+      </div>
       <div class="block last">
         <div class="labeltxt">
           <text class="labelstyle">身份证:</text>
         </div>
         <div class="inputtxt">
           <!--<input class="txt" type="button" placeholder="请选择" :value="type"/>-->
-          <input class="txt" type="text" placeholder="请输入身份证" :value="idcard" @input="General('idcard',$event)" @blur="checkIdcard"/>
+          <input class="txt" type="text" placeholder="请输入身份证" :value="didcard" @input="General('didcard',$event)"/>
         </div>
         <div class="seperate">
         </div>
       </div>
+
       <div class="seperateBlock"></div>
       <div class="block double">
         <div class="half" @click="labelSelect('wagonType',$event)">
@@ -233,8 +270,10 @@
                  @wxcPopupOverlayClicked="popupOverlayBottomPeopleClick"
                  pos="left"
                  width="500">
-          <people @business="parentEimtBusiness($event)"></people>
+          <people :retype="peopleType" @business="parentEimtBusiness($event)"></people>
       </wxc-popup>
+    </cell>
+  </list>
   </div>
 </template>
 
@@ -271,6 +310,9 @@ export default {
     people:'',
     phone:'',
     idcard:'',
+    dpeople:'',
+    dphone:'',
+    didcard:'',
     wagonType:'',
     kg:'',
     checkBoxType:false,
@@ -280,7 +322,10 @@ export default {
     phoneRight:false,
     carNumberRight:false,
     idcardRight:true,
-    methodOp:''
+    didcardRight:true,
+    methodOp:'',
+    peopleType:'',
+    isActiveButton:true
   }),
   computed:{
     btnStyle(){
@@ -311,28 +356,42 @@ export default {
         this.people = resData.people;
         this.phone = resData.phone;
         this.idcard = resData.idcard == null ? '' : resData.idcard;
+        this.dpeople = resData.dpeople;
+        this.dphone = resData.dphone;
+        this.didcard = resData.didcard == null ? '' : resData.didcard;
         this.wagonType = resData.wagonType;
         this.kg = resData.kg == null ? '' : resData.kg;
         this.isShow = resData.has == 'Y' ? false : true;
+        this.isActiveButton=resData.status;
       }else{
         this.methodOp='addInfo';
         this.topTitle = '< 新增 > 预报港信息新增';
         this.optionButton = '新增'
       }
     })
+    this.$router.setBackParams({
+      action:'both'
+    })
   },
   methods:{
     insertNewInfo(){
+      if(this.methodOp=='updateInfo' && this.isActiveButton!='已录入' && this.isActiveButton!='已确报'){
+        this.$notice.alert({
+          message: '已提交未确保状态，不能更改'
+        })
+        return
+      }
       this.checkCarNumber();
       this.checkPhone();
       this.checkIdcard();
+      this.checkdIdcard();
       if(this.wagonType!='无异常' && this.wagonType!='' && this.kg == ''){
         this.$notice.alert({
           message: '请输入车皮异常公斤数'
         })
         return
       }
-      if(this.carType == '' || this.carNumberRight == false || this.carWeight == '' || this.originType == '' || this.carArrive == '' || this.scrapType == '' || this.people == '' || this.phoneRight == false || this.wagonType =='' || this.idcardRight == false){
+      if(this.carType == '' || this.carNumberRight == false || this.carWeight == '' || this.originType == '' || this.carArrive == '' || this.scrapType == '' || this.people == '' || this.phoneRight == false || this.wagonType =='' || this.idcardRight == false || this.didcardRight == false){
         this.$notice.toast('检查输入项，有误')
 
       }else{
@@ -351,24 +410,31 @@ export default {
             q_people:this.people,
             q_phone:this.phone,
             q_idcard:this.idcard,
+            q_dpeople:this.dpeople,
+            q_dphone:this.dphone,
+            q_didcard:this.didcard,
             q_wagonType:this.wagonType,
             q_kg:this.kg,
             q_has: this.checkBoxType ? 'Y' : 'N'
           }
         }).then(resData => {
           this.overlay = false;
+
           if(resData.status == 1 && resData.count == 1){
             this.methodOp == 'addInfo' ? this.$notice.toast('新增成功') : this.$notice.toast('更新成功');
           }else{
+
             this.$notice.toast(resData.message);
           }
         }, error => {
           this.overlay = false;
+          this.$notice.loading.show(error)
         })
       }
     },
-    selectMaintain(){
+    selectMaintain(v){
       this.isLeftShow = true;
+      this.peopleType=v;
     },
     reme(){
       if(this.isShow){
@@ -401,13 +467,19 @@ export default {
       //this.isBottomShow = false;
     },
     parentEimtBusiness(json){
-      this.people = json.name;
-      this.phone = json.tel;
-      this.idcard = json.idcard;
+      if(json.which=='K'){
+        this.people = json.name;
+        this.phone = json.tel;
+        this.idcard = json.idcard ?  json.idcard : '';
+      }else{
+        this.dpeople = json.name;
+        this.dphone = json.tel;
+        this.didcard = json.idcard ? json.idcard : '';
+      }
       this.$refs.selectLeftPop.hide();
     },
     General(name,e){
-      this[name]=e.value;
+        this[name]=e.value;
     },
     checkCarNumber(){
       if(!/^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/.test(this.carNumber)){
@@ -420,7 +492,9 @@ export default {
       }
     },
     checkPhone(){
-      if(!/^[1][3,4,5,7,8][0-9]{9}$/.test(this.phone)){
+      this.phone == null ? '' : this.phone;
+      this.dphone == null ? '' : this.dphone;
+      if(!/^[1][3,4,5,7,8][0-9]{9}$/.test(this.phone) || !/^[1][3,4,5,7,8][0-9]{9}$/.test(this.dphone)){
         this.$notice.alert({
           message: '手机号非法'
         })
@@ -430,6 +504,7 @@ export default {
       }
     },
     checkIdcard(){
+      this.idcard == null ? '' : this.idcard;
       if(this.idcard!=''){
         if(!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(this.idcard)){
           this.idcardRight = false;
@@ -441,6 +516,21 @@ export default {
         }
       }else{
         this.idcardRight = true;
+      }
+    },
+    checkdIdcard(){
+      this.didcard == null ? '' : this.didcard;
+      if(this.didcard!=''){
+        if(!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(this.didcard)){
+          this.didcardRight = false;
+          this.$notice.alert({
+            message: '身份证号非法'
+          })
+        }else{
+          this.didcardRight = true;
+        }
+      }else{
+        this.didcardRight = true;
       }
     },
     dataPickPop(){
@@ -471,6 +561,9 @@ export default {
 </script>
 
 <style scoped>
+.area {
+  border-bottom-width: 1px;
+}
 .foot {
   height: 200px;
   align-items: center;

@@ -147,6 +147,9 @@ export default {
 			this.supplier = resData.supplier;
 			this.configList[0].value = ' ' + this.id + ' ';
 		})
+		this.$router.setBackParams({
+			action:'edit'
+		})
 	},
 	methods:{
 		select(type){

@@ -11,7 +11,6 @@ module.exports = {
         'js/pages/App.vue',
         //eros
         "js/pages/Index.vue",
-        "js/pages/More.vue",
         "js/pages/UserInfo.vue",
         "js/pages/Detail.vue",
         "js/pages/AddNewUser.vue",

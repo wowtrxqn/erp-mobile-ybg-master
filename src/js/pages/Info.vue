@@ -20,19 +20,21 @@
 					-->
 					<div class="itemleft">
 						<div class="leftwo">
-							<text class="itemtxt carborder" :ref="['name'+i]">{{ item.carNumber }}</text>
+							<text class="itemtxt carborder">{{ item.carNumber }}</text>
 							<text class="itemtxt stus">{{ item.status }}</text>
 						</div>
 						<text class="itemtxt itemtxtright">{{item.carType}} - {{ item.scrapType }}</text>
 					</div>
 					<div class="itemright">
 						<text class="itemtxt">预报日期：{{ item.carArrive }}</text>
-						<div class="delbtn" @click="deleteAction(index)">
+						<div class="delbtn" @click="deleteAction(index)" v-if="item.status=='已录入' || item.status=='已确报'">
 							<image :src="delPic" style="width:30px;height:30px;"></image>
 						</div>
 					</div>
 				</div>
-				<div class="shadow"><image :src="bg" style="width:750px;height:30px;"></image></div>
+				<div class="shadow">
+					<image :src="bg" style="width:750px;height:30px;"></image>
+				</div>
 			</div>
         </cell>
       </list>
@@ -101,7 +103,6 @@ export default {
 		timedesc: 'bmlocal://assets/timedesc.png',
 		iddesc: 'bmlocal://assets/iddesc.png',
 		delPic:'bmlocal://assets/delgray.png',
-		allowed: true,
 		idRange: 'asc',
 		timeRange: 'asc',
 		topPop:false,
@@ -114,11 +115,29 @@ export default {
         opacity:1,
         gesToken:0
 	}),
+	eros: {
+        beforeBackAppear(params) {
+        	if(!params){
+        		return
+        	}
+        	var op=params.action
+            if(op == 'both'){
+            	this.onrefresh()
+            }
+        }
+    },
 	created(){
 		this.overlay = true;
-		this.$navigator.setRightItem({
+		this.$navigator.setRightItem(
+		weex.config.env.os == 'android' ? 
+		{
 			text:'          ',
-            image:'bmlocal://assets/rightItem.png',
+            image:'bmlocal://assets/rightitemAndroid.png',
+            textColor: '#fff',
+            fontSize: '26',
+            fontWeight: 'normal'
+        } : {
+        	image:'bmlocal://assets/rightitemios.png',
             textColor: '#fff',
             fontSize: '26',
             fontWeight: 'normal'
@@ -262,9 +281,7 @@ export default {
 			})
 		},
 		clickfn(i,e){
-			if(!this.allowed) return
 			let currentInfo=this.infoList[i];
-			//this.$notice.toast('click');
 			this.$router.open({
             	name: 'InfoMaintain',
             	navShow:false,
@@ -277,7 +294,7 @@ export default {
 				this.$notice.toast('车牌号'+this.infoList[i].carNumber+'还未确报，车俩还未释放，操作失败')
 				return
 			}
-			if(status != '已录入'){
+			if(status != '已录入' && status !='已确报'){
 				this.$notice.toast('只有已录入的车辆才能提交')
 				return
 			}
@@ -299,7 +316,11 @@ export default {
 					}).then(resData => {
 					    if(resData.status == 0){
 					    	self.$notice.toast('提交成功')
-					    	self.infoList[i].status == '已提交'
+					    	//self.infoList[i].status == '已提交'
+					    	setTimeout(()=>{
+					    		self.infoList[i].status='已提交'
+					    	},100)
+					    	//self.$set(infoList[i],'status','已提交');
 					    }
 					}, error => {
 					})

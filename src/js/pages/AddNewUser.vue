@@ -116,7 +116,9 @@ export default {
 		}
 	},
 	created(){
-
+		this.$router.setBackParams({
+			action:'add'
+		})
 	},
 	methods:{
 		checkIdcard(){
