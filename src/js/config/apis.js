@@ -79,6 +79,9 @@ export default {
     updateInfo : 'EiService?type=mobile&service=WEEX03&method=UpdateInfo',
 
     //车俩提交
-    submit : 'EiService?type=mobile&service=WEEX03&method=UpdateSt'
+    submit : 'EiService?type=mobile&service=WEEX03&method=UpdateSt',
+
+    //再次提交
+    addAgain : 'EiService?type=mobile&service=WEEX03&method=UpdateStAgain'
 
 }

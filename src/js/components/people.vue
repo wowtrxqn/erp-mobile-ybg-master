@@ -50,7 +50,7 @@ export default {
 	components : {
 		WxcLoading
 	},
-	props:['caseType'],
+	props:['retype'],
 	data:() => ({
 		overlay:false,
 		people:[],
@@ -61,7 +61,10 @@ export default {
 	created(){
 		this.$fetch({
 			method: 'POST',
-			name: 'business'
+			name: 'business',
+			data:{
+				q_type:this.retype
+			}
 		}).then(resData => {
 			if(resData.status == 0 && resData.count > 0){
 				this.people=resData.data;
@@ -75,14 +78,17 @@ export default {
 	methods:{
 		searchstart(e){
 			this.svalue=e.value;
-			if(this.svalue=='') return
+			if(this.svalue==''){
+				this.onrefresh();
+			}
 			//axios搜索
 
 			this.$fetch({
         		method: 'POST',    
 		    	name: 'selectMaintainAll',
 		    	data:{
-		    		q_name:this.svalue
+		    		q_name:this.svalue,
+		    		q_type:this.retype
 		    	}
         	}).then(resData => {
 				if(resData.status == 0){
@@ -100,7 +106,10 @@ export default {
 			this.currentPage = 1;
 			this.$fetch({
 				method: 'POST',
-				name: 'business'
+				name: 'business',
+				data:{
+					q_type:this.retype
+				}
 			}).then(resData => {
 				this.overlay = false;
 				if(resData.status == 0 && resData.count > 0){
@@ -125,7 +134,8 @@ export default {
 				method: 'POST',
 				name: 'business',
 				data:{
-					pageNum:this.currentPage
+					pageNum:this.currentPage,
+					q_type:this.retype
 				}
 			}).then(resData => {
 				if(resData.status == 0 && resData.count > 0){
@@ -150,6 +160,7 @@ export default {
 		},
 		childEmit(e){
 			let json={};
+			json.which=this.retype;
 			json.name=e.target.children[0].children[0].attr.value.split(':')[1];
 			json.tel=e.target.children[0].children[1].attr.value.split(':')[1];
 			json.idcard=e.target.children[2].children[0].attr.value.split(':')[1];

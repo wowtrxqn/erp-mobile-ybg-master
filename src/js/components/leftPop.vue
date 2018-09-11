@@ -48,7 +48,7 @@
 				</div>
 			</div>
 			<div class="noticetel">
-				<text class="noticeteltxt" v-if="show">联系电话：56534</text>
+				<text class="noticeteltxt" v-if="show">联系电话：58951902</text>
 			</div>
 		<div class="bgfoot"><image style="width:500px;height:200px;" :src="bgf"></image></div>
 	</div>
@@ -61,7 +61,7 @@ export default {
 	data(){
 		return {
 			yuanhuan : 'bmlocal://assets/yuanhuan.png',
-			user : 'bmlocal://assets/cstxx.jpg',
+			user : 'bmlocal://assets/cstxx.png',
 			bgf:'bmlocal://assets/bgf.png',
 			notice:'bmlocal://assets/left_over_notice.png',
 			changepwd:'bmlocal://assets/left_over_changepwd.png',
@@ -81,7 +81,7 @@ export default {
 		childcheckupdate(){
 			this.$fetch({
 	          method: 'GET',   
-	          url: 'http://bjtm2.shasteel.cn/app/check?isDiff=1&jsVersion='+weex.config.env.jsVersion+'&appName=eros-app&android=1.0.0'
+	          url: 'http://bjtm2.shasteel.cn/app/check?isDiff=1&jsVersion='+weex.config.env.jsVersion+'&appName=eros-app&'+weex.config.env.os+'='+weex.config.env.appVersion
 	        }).then(resData => {
 	           if(resData.msg.indexOf('当前版本需要更新')!=-1){
 	           		let self=this;

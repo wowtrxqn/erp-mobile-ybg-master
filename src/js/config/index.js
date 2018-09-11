@@ -12,8 +12,8 @@ new Widget({
         routes
     },
     ajax: {
-        //baseUrl: 'http://bjtm.shasteel.cn/ybg/',
-        baseUrl: 'http://10.68.0.55:8080/bjtm/',
+        baseUrl: 'http://bjtm.shasteel.cn/ybg/',
+        //baseUrl: 'http://10.68.0.55:8080/bjtm/',
         /**
          * 接口别名
          */

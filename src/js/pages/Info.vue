@@ -26,7 +26,7 @@
 						<text class="itemtxt itemtxtright">{{item.carType}} - {{ item.scrapType }}</text>
 					</div>
 					<div class="itemright">
-						<text class="itemtxt">预报日期：{{ item.carArrive }}</text>
+						<text class="itemtxt">预报日期：{{ item.carArrive }}（{{item.people}}）</text>
 						<div class="delbtn" @click="deleteAction(index)" v-if="item.status=='已录入' || item.status=='已确报'">
 							<image :src="delPic" style="width:30px;height:30px;"></image>
 						</div>
@@ -294,42 +294,63 @@ export default {
 				this.$notice.toast('车牌号'+this.infoList[i].carNumber+'还未确报，车俩还未释放，操作失败')
 				return
 			}
-			if(status != '已录入' && status !='已确报'){
-				this.$notice.toast('只有已录入的车辆才能提交')
+			/*
+			if(status != '已录入' && status !='已确报' && status != '已作废'){
+				this.$notice.toast('已录入或提交处理万才能执行此操作')
 				return
-			}
+			}*/
 			let self = this;
-			this.$notice.confirm({
-				title: '[ '+this.infoList[i].carNumber+' ]',
-			    message: '预报日期：'+this.infoList[i].carArrive+'\n请确认是否继续执行提交操作',
-			    okTitle: '确认',
-			    cancelTitle: '取消',
-			    okCallback() {
-			        // 点击确认按钮的回调
-			        self.$fetch({
-					    method: 'POST',   
-					    name: 'submit',
-					    data: {
-					    	q_id:self.infoList[i].id,
-					    	q_carNumber:self.infoList[i].carNumber
-					    }
-					}).then(resData => {
-					    if(resData.status == 0){
-					    	self.$notice.toast('提交成功')
-					    	//self.infoList[i].status == '已提交'
-					    	setTimeout(()=>{
-					    		self.infoList[i].status='已提交'
-					    	},100)
-					    	//self.$set(infoList[i],'status','已提交');
-					    }
-					}, error => {
-					})
-			    },
-			    cancelCallback() {
-			        // 点击取消按钮的回调
-			    }
+			if(status=='已录入'){
+				this.$notice.confirm({
+					title: '[ '+this.infoList[i].carNumber+' ]',
+				    message: '预报日期：'+this.infoList[i].carArrive+'\n请确认是否继续执行提交操作',
+				    okTitle: '确认',
+				    cancelTitle: '取消',
+				    okCallback() {
+				        // 点击确认按钮的回调
+				        self.$fetch({
+						    method: 'POST',   
+						    name: 'submit',
+						    data: {
+						    	q_id:self.infoList[i].id,
+						    	q_carNumber:self.infoList[i].carNumber
+						    }
+						}).then(resData => {
+						    if(resData.status == 0){
+						    	self.$notice.toast('提交成功')
+						    	//self.infoList[i].status == '已提交'
+						    	setTimeout(()=>{
+						    		self.infoList[i].status='已提交'
+						    	},100)
+						    	//self.$set(infoList[i],'status','已提交');
+						    }else{
+						    	self.$notice.toast('该车辆已经提交过，请勿重复提交')
+						    }
+						}, error => {
+						})
+				    },
+				    cancelCallback() {
+				        // 点击取消按钮的回调
+				    }
 
-			})
+				})
+			}else{
+				this.$notice.confirm({
+					title: '[ '+this.infoList[i].carNumber+' ]',
+					message: '该车辆当前确报流程已结束'+'\n正在执行再次提交操作，按确认进入编辑页面',
+					okTitle: '确认',
+				    cancelTitle: '取消',
+				    okCallback() {
+				    	let currentInfo = self.infoList[i]
+				    	currentInfo.again = true;
+				    	currentInfo.change_status = '再次提交'
+				    	self.$router.open({
+			        		name: 'InfoMaintain',
+			        		params:currentInfo
+			        	})
+				    }
+				})
+			}
 		},
 		addnew($event){
 			this.$router.open({

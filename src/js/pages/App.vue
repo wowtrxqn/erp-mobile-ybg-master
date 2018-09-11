@@ -60,7 +60,7 @@
     <div class="loginKit">
         <text class="kitStyle">Copyright (c) 2018 Shasteel Cloud</text>
         <text style="height:10px;"></text>
-        <text class="kitStyle">App Version1.0.1 - beta</text>
+        <text class="kitStyle">App Version1.0.8 - beta</text>
     </div>
     <div v-if="progressVisible" class="bottomProgress">
       <wxc-progress :value="progessValue" 
@@ -306,7 +306,7 @@
           // 错误回调
           this.overlay = false;
           this.$notice.alert({
-              message: '登陆失败，请检客服'
+              message: '登陆失败，请联系客服'
           })
           //this.$notice.loading.show(error);
       })

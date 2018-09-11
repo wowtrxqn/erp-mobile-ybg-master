@@ -343,10 +343,17 @@ export default {
   created(){
     this.$router.getParams().then(resData => {
       if(resData.id){
-        this.methodOp='updateInfo';
         this.id = resData.id;
         this.topTitle = '< 详情 > 预报港信息明细';
-        this.optionButton = '确定';
+        if(resData.again && resData.again==true){
+          this.optionButton = '再次提交';
+          this.methodOp='addAgain'
+          this.isActiveButton=resData.change_status;
+        }else{
+          this.methodOp='updateInfo';
+          this.optionButton = '确定';
+          this.isActiveButton=resData.status;
+        }
         this.carType = resData.carType;
         this.carNumber = resData.carNumber;
         this.carWeight = resData.carWeight;
@@ -362,11 +369,12 @@ export default {
         this.wagonType = resData.wagonType;
         this.kg = resData.kg == null ? '' : resData.kg;
         this.isShow = resData.has == 'Y' ? false : true;
-        this.isActiveButton=resData.status;
+        
       }else{
         this.methodOp='addInfo';
         this.topTitle = '< 新增 > 预报港信息新增';
         this.optionButton = '新增'
+        this.isActiveButton = '新增'
       }
     })
     this.$router.setBackParams({
@@ -375,9 +383,15 @@ export default {
   },
   methods:{
     insertNewInfo(){
-      if(this.methodOp=='updateInfo' && this.isActiveButton!='已录入' && this.isActiveButton!='已确报'){
+      if(this.isActiveButton!='已录入' && this.isActiveButton!='再次提交' && this.isActiveButton!='新增'){
         this.$notice.alert({
-          message: '已提交未确保状态，不能更改'
+          message: '只有已录入或已确报再提交状态下才能编辑'
+        })
+        return
+      }
+      if(new Date(this.carArrive.replace(/^(\d{4})(\d{2})(\d{2})$/, "$1/$2/$3 23:59:59")).getTime()-new Date().getTime()<0){
+        this.$notice.alert({
+          message: '预估到达日期不符合实际!'
         })
         return
       }
@@ -415,7 +429,8 @@ export default {
             q_didcard:this.didcard,
             q_wagonType:this.wagonType,
             q_kg:this.kg,
-            q_has: this.checkBoxType ? 'Y' : 'N'
+            q_has: this.checkBoxType ? 'Y' : 'N',
+            q_platform: weex.config.env.os
           }
         }).then(resData => {
           this.overlay = false;
@@ -482,7 +497,7 @@ export default {
         this[name]=e.value;
     },
     checkCarNumber(){
-      if(!/^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$/.test(this.carNumber)){
+      if(!/(^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}|河北)[A-Z]{0,1}[A-Z0-9]{4,7}[A-Z0-9挂学警港澳]{1}$/.test(this.carNumber)){
         this.$notice.alert({
           message: '车号非法,请重新输入'
         })
